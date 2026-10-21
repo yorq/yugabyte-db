@@ -69,11 +69,7 @@ func (handler *ConfigureServiceHandler) Handle(
 		earlyoomProvisioned = (provisionedStatus.ExitStatus.Code == 0)
 	}
 
-	user := "yugabyte"
-	if !earlyoomProvisioned {
-		user = ""
-	}
-	command, options := handler.getCommandWithOptions(ybHomeDir, earlyoomProvisioned)
+	user, command, options := handler.getCommandWithOptions(ybHomeDir, earlyoomProvisioned)
 	handler.shellTask = NewShellTaskWithUser(
 		"runConfigureEarlyoomService",
 		user,
@@ -103,30 +99,24 @@ func (handler *ConfigureServiceHandler) Result() string {
 	return handler.result
 }
 
-// Returns options for the preflight checks.
+// Returns the user, command and options to run.
+// Enabling always goes through the installer so that the earlyoom binary on the node is
+// replaced with the one bundled with this node-agent (older binaries may not support newer
+// args, e.g. -K). Only disabling an already provisioned service uses the configure script.
 func (handler *ConfigureServiceHandler) getCommandWithOptions(
 	ybHomeDir string,
 	earlyoomProvisioned bool,
-) (string, []string) {
-	args := handler.param.GetEarlyoomConfig().GetStartArgs()
-	if earlyoomProvisioned {
+) (string, string, []string) {
+	if earlyoomProvisioned && !handler.serviceEnabled {
 		command := fmt.Sprintf(
 			"%s/bin/configure_earlyoom_service.sh",
 			ybHomeDir,
 		)
-		options := []string{"-a"}
-		if handler.serviceEnabled {
-			options = append(options, "enable")
-			if handler.param.GetEarlyoomConfig() != nil &&
-				len(handler.param.GetEarlyoomConfig().GetStartArgs()) > 0 {
-				options = append(options, "-c")
-				options = append(options, args)
-			}
-		} else {
-			options = append(options, "disable")
-		}
-		return command, options
-	} else {
-		return util.EarlyoomScriptPath(), []string{"--enable", "--earlyoom_args", args, "--yb_home_dir", ybHomeDir}
+		return "yugabyte", command, []string{"-a", "disable"}
+	}
+	// Empty args keep the existing node config on reinstall (see earlyoom-installer.sh).
+	args := handler.param.GetEarlyoomConfig().GetStartArgs()
+	return "", util.EarlyoomScriptPath(), []string{
+		"--enable", "--earlyoom_args", args, "--yb_home_dir", ybHomeDir,
 	}
 }

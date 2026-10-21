@@ -115,8 +115,12 @@ EOF
 
   rm -rf "${TMP_DIR}/earlyoom"
 
-  if [ -z "${EARLYOOM_ARGS}" ]; then
-    EARLYOOM_ARGS="-m 5 -r 240 --prefer 'postgres'"
+  # On reinstall without explicit args, keep the args the node is already configured with.
+  if [ -z "${EARLYOOM_ARGS:-}" ] && [ -f "${BIN_DIR}/earlyoom.config" ]; then
+    EARLYOOM_ARGS=$(sed -n 's/^EARLYOOM_ARGS="\(.*\)"$/\1/p' "${BIN_DIR}/earlyoom.config")
+  fi
+  if [ -z "${EARLYOOM_ARGS:-}" ]; then
+    EARLYOOM_ARGS="-m 5 -r 240 --prefer 'postgres' -K"
   fi
 
   ACTION="configure"

@@ -14,5 +14,5 @@ https://ybm-package-store.s3.amazonaws.com/unified-otelcol/0.145.0-1-fips/otelco
 https://downloads.yugabyte.com/docker/thirdparty-deps/x86_64/tectia-ssh.tar.gz
 https://downloads.yugabyte.com/docker/thirdparty-deps/clockbound-linux-x86_64.tar.gz
 https://downloads.yugabyte.com/docker/thirdparty-deps/clockbound-linux-aarch64.tar.gz
-https://github.com/yugabyte/earlyoom/releases/download/v0.0.5-test/earlyoom-linux-amd64.tar.gz
-https://github.com/yugabyte/earlyoom/releases/download/v0.0.5-test/earlyoom-linux-arm64.tar.gz
+https://github.com/yugabyte/earlyoom/releases/download/v0.0.6-test/earlyoom-linux-amd64.tar.gz
+https://github.com/yugabyte/earlyoom/releases/download/v0.0.6-test/earlyoom-linux-arm64.tar.gz

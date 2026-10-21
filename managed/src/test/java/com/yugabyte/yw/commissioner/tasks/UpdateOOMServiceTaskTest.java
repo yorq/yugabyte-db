@@ -242,14 +242,16 @@ public class UpdateOOMServiceTaskTest extends CommissionerBaseTest {
     config.setAvailMemoryTermKb(1024);
     config.setPreferPattern("postgres");
     config.setReportInterval(1000);
+    config.setSigkillOnly(true);
     String args = AdditionalServicesStateData.toArgs(config);
-    assertEquals("-M 1024 -m 10 --prefer 'postgres' -r 1000", args);
+    assertEquals("-M 1024 -m 10 --prefer 'postgres' -r 1000 -K", args);
     assertEquals(config, AdditionalServicesStateData.fromArgs(args, true));
 
     config.setAvailMemoryKillPercent(15);
     config.setAvailMemoryKillKb(2048);
     config.setPreferPattern("postgres");
     config.setReportInterval(1000);
+    config.setSigkillOnly(false);
     args = AdditionalServicesStateData.toArgs(config);
     assertEquals("-M 1024,2048 -m 10,15 --prefer 'postgres' -r 1000", args);
     assertEquals(config, AdditionalServicesStateData.fromArgs(args, true));

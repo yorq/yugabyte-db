@@ -29,6 +29,8 @@ public class AdditionalServicesStateData {
     @ApiModelProperty private Integer reportInterval;
 
     @ApiModelProperty private String preferPattern;
+
+    @ApiModelProperty private Boolean sigkillOnly;
   }
 
   @Data
@@ -93,6 +95,8 @@ public class AdditionalServicesStateData {
           }
         } else if (key.equals("-r")) {
           parseInt("report interval", value, result::setReportInterval, ignoreErrors);
+        } else if (key.equals("-K")) {
+          result.setSigkillOnly(true);
         }
       }
     }
@@ -109,6 +113,9 @@ public class AdditionalServicesStateData {
     }
     if (config.getReportInterval() != null && config.getReportInterval() > 0) {
       sb.append(" -r ").append(config.getReportInterval());
+    }
+    if (config.getSigkillOnly() != null && config.getSigkillOnly().booleanValue()) {
+      sb.append(" -K");
     }
     return sb.toString().trim();
   }
