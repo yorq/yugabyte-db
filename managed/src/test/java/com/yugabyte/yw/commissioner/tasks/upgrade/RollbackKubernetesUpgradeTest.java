@@ -21,6 +21,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.yugabyte.yw.common.NodeUniverseYsqlContext;
 import com.yugabyte.yw.common.KubernetesUtil;
 import com.yugabyte.yw.common.PlatformServiceException;
 import com.yugabyte.yw.common.RegexMatcher;
@@ -346,7 +347,7 @@ public class RollbackKubernetesUpgradeTest extends KubernetesUpgradeTaskTest {
     lenient()
         .when(
             mockYsqlQueryExecutor.executeQueryInNodeShell(
-                any(), any(), any(), anyBoolean(), anyBoolean()))
+                any(NodeUniverseYsqlContext.class), any()))
         .thenReturn(Json.newObject());
 
     RollbackUpgradeParams taskParams = new RollbackUpgradeParams();

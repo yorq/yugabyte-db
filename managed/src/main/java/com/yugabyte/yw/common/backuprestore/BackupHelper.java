@@ -26,6 +26,7 @@ import com.yugabyte.yw.common.IAMTemporaryCredentialsProvider;
 import com.yugabyte.yw.common.IAMTemporaryCredentialsProvider.IAMCredentialSource;
 import com.yugabyte.yw.common.NodeCloudDetector;
 import com.yugabyte.yw.common.NodeUniverseManager;
+import com.yugabyte.yw.common.NodeUniverseYsqlContext;
 import com.yugabyte.yw.common.PlatformExecutorFactory;
 import com.yugabyte.yw.common.PlatformServiceException;
 import com.yugabyte.yw.common.ShellResponse;
@@ -1571,7 +1572,8 @@ public class BackupHelper {
           BAD_REQUEST, "Cluster may not have been initialized yet. Please try later");
     }
     ShellResponse shellResponse =
-        nodeUniverseManager.runYsqlCommand(nodeToUse, universe, "template1", TABLESPACES_SQL_QUERY);
+        nodeUniverseManager.runYsqlCommand(
+            NodeUniverseYsqlContext.of(universe, nodeToUse), "template1", TABLESPACES_SQL_QUERY);
     if (!shellResponse.isSuccess()) {
       log.warn(
           "Attempt to fetch tablespace info via node {} failed, response {}:{}",
